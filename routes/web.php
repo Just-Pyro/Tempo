@@ -19,4 +19,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/dashboard', [TaskController::class, 'index'])->name('dashboard');
     
     Route::post('/logout', [HomeController::class, 'logout'])->name('logout');
+
+    Route::get('/tasks', [TaskController::class, 'tasks'])->name('tasks');
+    Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/tasks/store', [TaskController::class, 'store'])->name('tasks.store');
 });

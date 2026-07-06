@@ -17,9 +17,14 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function tasks()
+    {
+        return view('tasks.index');
+    }
+
     public function create()
     {
-        //
+        return view('tasks.create');
     }
 
     /**
@@ -27,7 +32,15 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'etc' => 'required',
+            'date_schedule' => 'required',
+        ], [
+            'name.required' => 'The Task name field is required.'
+        ]);
+
+        dd($request->all());
     }
 
     /**

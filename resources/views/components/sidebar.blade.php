@@ -20,9 +20,11 @@
         <x-pagetab pageName="Dashboard">
             <i class="fa-solid fa-table-columns"></i>
         </x-pagetab>
-        <x-pagetab pageName="Tasks">
-            <i class="fa-solid fa-clipboard-check"></i>
-        </x-pagetab>
+        <a href="{{ route('tasks') }}">
+            <x-pagetab pageName="Tasks">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </x-pagetab>
+        </a>
         <x-pagetab pageName="Archives">
             <i class="fa-solid fa-box-archive"></i>
         </x-pagetab>

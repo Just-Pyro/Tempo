@@ -1,5 +1,5 @@
 
-@props(['pageName' => 'No Page Name'])
+@props(['pageName' => 'No Page Name', 'link' => '#'])
 
 @php
     $page = request()->route()->getName();

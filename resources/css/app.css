@@ -22,4 +22,12 @@
     .sidebar .active .page-tab-icon {
         @apply !text-accent;
     }
+
+    .primary-btn {
+        @apply border border-gray-300 px-4 py-2 rounded-lg shadow bg-white font-medium cursor-pointer;
+    }
+
+    .form-label {
+        @apply text-base text-stone-800 text-sm mb-1;
+    }
 }
