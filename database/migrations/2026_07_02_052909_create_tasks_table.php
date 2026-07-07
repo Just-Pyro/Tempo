@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id');
             $table->string('name');
-            $table->text('details');
+            $table->text('details')->nullable();
             $table->time('etc');
-            $table->time('atc');
+            $table->time('atc')->nullable();
             $table->dateTime('date_schedule')->nullable();
             $table->enum('status', ['pending', 'in_progress', 'completed', 'missed', 'archived']);
             $table->dateTime('archived_date')->nullable();

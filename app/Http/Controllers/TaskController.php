@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -40,9 +43,29 @@ class TaskController extends Controller
             'name.required' => 'The Task name field is required.'
         ]);
 
-        dd($request->all());
+        try {
+            Task::create([
+                'user_id' => Auth::id(),
+                'name' => $request->name,
+                'details' => $request->details,
+                'etc' => $request->etc,
+                'date_schedule' => $request->date_schedule,
+                'status' => 'pending',
+            ]);
+    
+            return redirect()->back()->with(['status' => 'success', 'title' => 'Task Created!', 'message' => 'Your task has been successfully created.']);
+        } catch (\Throwable $th) {
+            Log::error('Task Creation Failed: ' . $th->getMessage());
+
+            return redirect()->back()->with(['status' => 'error', 'title' => 'Something went wrong', 'message' => $th->getMessage()]);
+        }
+
     }
 
+    public function dataTable(Request $request)
+    {
+        
+    }
     /**
      * Display the specified resource.
      */

@@ -22,7 +22,7 @@
 
                     <div class="flex flex-col">
                         <label for="details" class="form-label">Description (optional)</label>
-                        <textarea name="details" id="details" rows="2" class="px-4 py-2 rounded-lg border border-stone-300" placeholder="What does this task involve?"></textarea>
+                        <textarea name="details" id="details" rows="4" class="px-4 py-2 rounded-lg border border-stone-300" placeholder="What does this task involve?"></textarea>
                     </div>
 
                     <div class="flex gap-3">
