@@ -6,6 +6,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\DataTables;
 
 class TaskController extends Controller
 {
@@ -62,9 +63,17 @@ class TaskController extends Controller
 
     }
 
-    public function dataTable(Request $request)
+    public function dataTable()
     {
-        
+        $user = Auth::user();
+
+        $tasks = Task::where('user_id', $user->id);
+        return DataTables::of($tasks)
+            ->addColumn('action', function ($task) {
+                return '<a href="javascript:void(0);"><i class="fa fa-edit></i></a>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
     /**
      * Display the specified resource.

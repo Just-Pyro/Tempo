@@ -30,4 +30,81 @@
     .form-label {
         @apply text-base text-stone-800 text-sm mb-1;
     }
+
+    .dt-layout-start {
+        @apply ms-3;
+    }
+
+    .dt-layout-end {
+        @apply me-3;
+    }
+
+    .dt-length,
+    .dt-search {
+        @apply text-xs !text-stone-700;
+    }
+
+    #dt-length-0 {
+        @apply mx-1 text-base !text-black font-medium !rounded-md !border-stone-200 text-center;
+    }
+
+    #dt-search-0 {
+        @apply !ms-2 !text-black !rounded-md !border-stone-200 !px-3 !py-2 !w-[250px];
+    }
+
+    .dt-info {
+        @apply text-xs !text-stone-800;
+    }
+
+    .dt-paging button {
+        @apply !ms-1 font-medium !text-black !rounded-lg !border-stone-300;
+    }
+
+    .dt-paging button.current {
+        @apply !bg-none !bg-white;
+    }
+
+    #tasks-table th {
+        @apply !border-stone-300 bg-[#f9fafb];
+    }
+
+    #tasks-table tr td {
+        @apply border-b !border-stone-300;
+    }
+
+    #tasks-table thead {
+        @apply text-xs text-stone-600;
+    }
+
+    /* Remove DataTables' built-in triangle content entirely */
+    table.dataTable thead .dt-column-order::before,
+    table.dataTable thead .dt-column-order::after {
+        content: "" !important;
+        display: none !important;
+    }
+
+    .dt-column-order {
+        @apply inline-flex flex-col gap-0 ml-1 justify-center;
+    }
+
+    .dt-sort-asc-icon,
+    .dt-sort-desc-icon {
+        @apply font-medium text-[8px] opacity-40;
+    }
+
+    th.dt-ordering-asc .dt-sort-asc-icon {
+        @apply opacity-100 text-yellow-600;
+    }
+
+    th.dt-ordering-asc .dt-sort-desc-icon {
+        @apply opacity-100 text-yellow-400;
+    }
+
+    th.dt-ordering-desc .dt-sort-desc-icon {
+        @apply opacity-100 text-yellow-600;
+    }
+
+    th.dt-ordering-desc .dt-sort-asc-icon {
+        @apply opacity-100 text-yellow-400;
+    }
 }
