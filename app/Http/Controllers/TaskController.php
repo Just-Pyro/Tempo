@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -69,11 +71,75 @@ class TaskController extends Controller
 
         $tasks = Task::where('user_id', $user->id);
         return DataTables::of($tasks)
-            ->addColumn('action', function ($task) {
-                return '<a href="javascript:void(0);"><i class="fa fa-edit></i></a>';
+            ->editColumn('date_schedule', function ($task) {
+                $date = Carbon::parse($task->date_schedule)
+                    ->format('F j, Y');
+                return $date;
             })
-            ->rawColumns(['action'])
+            ->editColumn('etc', function ($task) {
+                return $this->formatDurationFromTime($task->etc);
+            })
+            ->editColumn('atc', function($task) {
+                if (!$task->atc) return '—';
+
+                return $this->formatDurationFromTime($task->atc);
+            })
+            ->editColumn('status', function($task) {
+                $colorsByStatus = [
+                    'pending' => [
+                        'text-color' => '#b45309',
+                        'bg-color' => '#fef3c7',
+                    ],
+                    'in_progress' => [
+                        'text-color' => '#1d4ed8',
+                        'bg-color' => '#dbeafe',
+                    ],
+                    'completed' => [
+                        'text-color' => '#15803d',
+                        'bg-color' => '#dcfce7',
+                    ],
+                    'missed' => [
+                        'text-color' => '#b91c1c',
+                        'bg-color' => '#fee2e2',
+                    ],
+                ];
+
+                $status = ucfirst(str_replace('_', ' ', $task->status));
+                $colors = $colorsByStatus[$task->status];
+
+                return sprintf('<span style="color: %s; background-color: %s; " class="task-status">%s</span>',
+                    $colors['text-color'],
+                    $colors['bg-color'],
+                    $status);
+            })
+            ->addColumn('action', function ($task) {
+                return '<div>
+                    <a href="'. route('tasks.edit', $task->id) .'">
+                        <div class="task-actions"><i class="fa fa-edit"></i></div>
+                    </a>
+                    <a href="#">
+                        <div class="task-actions"><i class="fa fa-trash"></i></div>
+                    </a>
+                </div>';
+            })
+            ->rawColumns(['action', 'status'])
             ->make(true);
+    }
+
+    public function formatDurationFromTime(string $time)
+    {
+        $interval = CarbonInterval::createFromFormat('H:i:s', $time);
+
+        $hours = $interval->hours;
+        $minutes = $interval->minutes;
+
+        if ($hours > 0 && $minutes > 0) {
+            return $hours . 'hr' . ($hours > 1 ? 's' : '') . ' ' . $minutes . ' min';
+        } elseif ($hours > 0) {
+            return $hours . 'hr' . ($hours > 1 ? 's' : '');
+        } else {
+            return $minutes . ' min';
+        }
     }
     /**
      * Display the specified resource.
@@ -88,7 +154,9 @@ class TaskController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $task = Task::find($id)->first();
+
+        return view('tasks.edit', compact('task'));
     }
 
     /**
@@ -96,7 +164,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        dd($request->all());
     }
 
     /**

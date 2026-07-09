@@ -37,9 +37,9 @@
                 pagingType: "simple_numbers",
                 columns: [
                     { data: "name", name: "name"},
-                    { data: "date_schedule", name: "date_schedule"},
-                    { data: "etc", name: "etc"},
-                    { data: "atc", name: "atc"},
+                    { data: "date_schedule", name: "date_schedule", searchable: false},
+                    { data: "etc", name: "etc", searchable: false},
+                    { data: "atc", name: "atc", searchable: false},
                     { data: "status", name: "status"},
                     { data: "action", name: "action", orderable: false, searchable: false},
                 ],

@@ -76,6 +76,10 @@
         @apply text-xs text-stone-600;
     }
 
+    #tasks-table tbody {
+        @apply text-sm font-medium;
+    }
+
     /* Remove DataTables' built-in triangle content entirely */
     table.dataTable thead .dt-column-order::before,
     table.dataTable thead .dt-column-order::after {
@@ -106,5 +110,17 @@
 
     th.dt-ordering-desc .dt-sort-asc-icon {
         @apply opacity-100 text-yellow-400;
+    }
+
+    .task-status {
+        @apply text-xs font-medium px-2 py-1 rounded-full;
+    }
+
+    .task-actions {
+        @apply text-xs border border-stone-300 px-4 py-3 rounded-lg text-black inline-block;
+    }
+
+    div:has(> a > .task-actions) {
+        @apply flex gap-2;
     }
 }
