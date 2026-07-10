@@ -117,7 +117,7 @@
     }
 
     .task-actions {
-        @apply text-xs border border-stone-300 px-4 py-3 rounded-lg text-black inline-block;
+        @apply text-xs border border-stone-300 px-2 py-1 rounded-lg text-black inline-block;
     }
 
     div:has(> a > .task-actions) {

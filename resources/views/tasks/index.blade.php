@@ -3,12 +3,12 @@
 @section('content')
     <x-wholepagewrapper class="bg-[#f9fafb]">
         <x-sidebar />
-        <div class="flex-1 px-8 py-12 flex flex-col gap-5">
+        <x-taskcontentwrapper class="flex flex-col gap-5">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-medium">Tasks</h1>
                 <a href="{{ route('tasks.create') }}" class="primary-btn"><i class="fa-solid fa-plus"></i> New Task</a>
             </div>
-
+    
             <div class="bg-white rounded-2xl border border-stone-300">
                 <table id="tasks-table" class="table-auto border-y !border-stone-300">
                     <thead>
@@ -23,7 +23,7 @@
                     </thead>
                 </table>
             </div>
-        </div>
+        </x-taskcontentwrapper>
     </x-wholepagewrapper>
 @endsection
 

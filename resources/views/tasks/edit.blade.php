@@ -3,12 +3,12 @@
 @section('content')
     <x-wholepagewrapper class="bg-[#f9fafb]">
         <x-sidebar />
-        <div class="flex-1 px-8 py-12 overflow-x-hidden overflow-y-auto">
+        <x-taskcontentwrapper>
             <div class="flex gap-3 items-center">
                 <a href="{{ route('tasks') }}" class="primary-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
                 <h1 class="text-2xl font-medium">Edit task</h1>
             </div>
-
+    
             <x-formwrapper class="mt-8">
                 <form action="{{ route('tasks.update', $task->id) }}" method="POST" class="flex flex-col gap-5">
                     @csrf
@@ -20,12 +20,12 @@
                             <span class="text-xs text-red-800">{{ $message }}</span>
                         @enderror
                     </div>
-
+    
                     <div class="flex flex-col">
                         <label for="details" class="form-label">Description (optional)</label>
                         <textarea name="details" id="details" rows="4" class="px-4 py-2 rounded-lg border border-stone-300" placeholder="What does this task involve?" readonly>{{ $task->details ?? '' }}</textarea>
                     </div>
-
+    
                     <div class="flex gap-3">
                         <div class="flex-1 flex flex-col">
                             @php
@@ -47,30 +47,50 @@
                             <input type="date" id="date_schedule" name="date_schedule" class="px-4 py-2 rounded-lg border border-stone-300" value="{{ $dateScheduled }}" readonly>
                         </div>
                     </div>
-
+    
                     <div class="flex-1 flex flex-col">
                         @php
                             $isPending = $task->status == 'pending';
                             $isInProgress = $task->status == 'in_progress';
                         @endphp
                         <label for="status" class="form-label">Status</label>
-                        <select name="status" id="status" class="px-4 py-2 rounded-lg border border-stone-300 appearance-none">
+                        <select name="status" id="status" class="px-4 py-2 rounded-lg border border-stone-300 appearance-none @if ($task->atc)
+                            pointer-events-none
+                        @endif">
                             @if (!$isInProgress && $isPending)
                                 <option value="pending" selected @if($isPending) hidden @endif>Pending</option>
                             @endif
                             <option value="in_progress" @if($isInProgress) hidden @endif>In Progress</option>
                             @if (!$isPending)
-                                <option value="completed">Completed</option>
+                                <option value="completed" @if ($task->status == 'completed')
+                                    selected
+                                @endif>Completed</option>
+                            @endif
+    
+                            @if ($task->status == 'missed')
+                                <option value="missed" selected>Missed</option>
                             @endif
                         </select>
                     </div>
-
+    
                     <div class="form-footer flex gap-3">
-                        <button class="primary-btn shadow-xs" type="submit">Save changes</button>
-                        <a href="{{ route('tasks') }}" class="primary-btn shadow-xs">Cancel</a>
+                        @if (!$task->atc && $task->status != 'missed')
+                            <button class="primary-btn opacity-50 shadow-xs pointer-events-none" type="submit">Save changes</button>
+                            <a href="{{ route('tasks') }}" class="primary-btn shadow-xs">Cancel</a>
+                        @endif
                     </div>
                 </form>
             </x-formwrapper>
-        </div>
+        </x-taskcontentwrapper>
     </x-wholepagewrapper>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function() {
+            $('select[name="status"]').on('change', function() {
+                $('button.primary-btn').removeClass("opacity-50 pointer-events-none");
+            });
+        });
+    </script>
+@endpush

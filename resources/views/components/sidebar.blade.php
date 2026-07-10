@@ -17,9 +17,11 @@
             </div>
         </div>
     @else
-        <x-pagetab pageName="Dashboard">
-            <i class="fa-solid fa-table-columns"></i>
-        </x-pagetab>
+        <a href="{{ route('dashboard') }}">
+            <x-pagetab pageName="Dashboard">
+                <i class="fa-solid fa-table-columns"></i>
+            </x-pagetab>
+        </a>
         <a href="{{ route('tasks') }}">
             <x-pagetab pageName="Tasks">
                 <i class="fa-solid fa-clipboard-check"></i>

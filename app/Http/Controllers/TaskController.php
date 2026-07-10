@@ -104,8 +104,12 @@ class TaskController extends Controller
                     ],
                 ];
 
-                $status = ucfirst(str_replace('_', ' ', $task->status));
-                $colors = $colorsByStatus[$task->status];
+                $schedIsPast = Carbon::parse($task->date_schedule)->isPast();
+
+                $finalStatus = ($schedIsPast && $task->status != 'completed') ? 'missed' : $task->status;
+
+                $status = ucfirst(str_replace('_', ' ', $finalStatus));
+                $colors = $colorsByStatus[$finalStatus];
 
                 return sprintf('<span style="color: %s; background-color: %s; " class="task-status">%s</span>',
                     $colors['text-color'],
@@ -154,7 +158,12 @@ class TaskController extends Controller
      */
     public function edit(string $id)
     {
-        $task = Task::find($id)->first();
+        $task = Task::find($id);
+        
+        if (Carbon::parse($task->date_schedule)->isPast() && $task->status != 'completed') {
+            $task->status = 'missed';
+            $task->save();
+        }
 
         return view('tasks.edit', compact('task'));
     }
@@ -164,7 +173,26 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        dd($request->all());
+        $request->validate([
+            'status' => 'required'
+        ]);
+        
+        $task = Task::findOrFail($id);
+
+        $task->status = $request->status;
+            
+        if ($request->status == 'completed') {
+            $timeStart = Carbon::parse($task->updated_at);
+            $timeEnd = now();
+
+            $diffInSeconds = $timeEnd->diffInSeconds($timeStart);
+
+            $task->atc = gmdate('H:i:s', $diffInSeconds);
+        }
+
+        $task->save();
+
+        return redirect()->back()->with(['status' => 'success', 'title' => 'Task Updated!', 'message' => 'Your task has been successfully updated!']);
     }
 
     /**
