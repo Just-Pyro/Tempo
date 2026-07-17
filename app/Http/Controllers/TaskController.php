@@ -17,7 +17,26 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        $completed = Task::where("status", "completed")->count();
+        $pending = Task::where("status", "pending")->count();
+        $missed = Task::where("status", "missed")->count();
+        $inProgress = Task::where("status", "in_progress")->count();
+        $totalTasks = $completed + $pending + $missed + $inProgress;
+
+        $status = [
+            'completed' => $completed,
+            'pending' => $pending,
+            'missed' => $missed,
+            'in_progress' => $inProgress,
+        ];
+
+        $tasks = Task::where('date_schedule', date("Y-m-d 00:00:00"))->whereNot('status', 'archived')->get();
+
+        $tasks->each(function($task) {
+            $task->etc = $this->formatDurationFromTime($task->etc);
+        });
+
+        return view('dashboard', compact('totalTasks', 'status', 'tasks'));
     }
 
     /**
@@ -69,7 +88,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
 
-        $tasks = Task::where('user_id', $user->id);
+        $tasks = Task::where('user_id', $user->id)->whereNot('status', 'archived')->latest();
         return DataTables::of($tasks)
             ->editColumn('date_schedule', function ($task) {
                 $date = Carbon::parse($task->date_schedule)
@@ -104,7 +123,7 @@ class TaskController extends Controller
                     ],
                 ];
 
-                $schedIsPast = Carbon::parse($task->date_schedule)->isPast();
+                $schedIsPast = Carbon::parse($task->date_schedule)->isBefore(Carbon::today());
 
                 $finalStatus = ($schedIsPast && $task->status != 'completed') ? 'missed' : $task->status;
 
@@ -121,7 +140,7 @@ class TaskController extends Controller
                     <a href="'. route('tasks.edit', $task->id) .'">
                         <div class="task-actions"><i class="fa fa-edit"></i></div>
                     </a>
-                    <a href="#">
+                    <a href="javascript:void(0);" class="archive-btn" data-id="' . $task->id .'">
                         <div class="task-actions"><i class="fa fa-trash"></i></div>
                     </a>
                 </div>';
@@ -160,12 +179,56 @@ class TaskController extends Controller
     {
         $task = Task::find($id);
         
-        if (Carbon::parse($task->date_schedule)->isPast() && $task->status != 'completed') {
+        if (Carbon::parse($task->date_schedule)->isBefore(Carbon::today()) && $task->status != 'completed') {
             $task->status = 'missed';
             $task->save();
         }
 
         return view('tasks.edit', compact('task'));
+    }
+
+    public function archiveTask(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:tasks,id',
+        ]);
+
+        $task = Task::find($request->id);
+
+        if ($task) {
+            $task->status = 'archived';
+            $task->archived_date = Carbon::now();
+            $task->save();
+
+            return redirect()->back()->with([
+                'status' => 'success',
+                'title' => 'Task Archived!',
+                'message' => 'This task has been archived!'
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'status' => 'error',
+                'title' => 'Task Not Found!',
+                'message' => 'Your task could not be found in the database!'
+            ]);
+        }
+    }
+
+    public function archiveTable()
+    {
+        $months = Task::whereNotNull('archived_date')
+            ->selectRaw('YEAR(archived_date) as year, MONTH(archived_date) as month')
+            ->distinct()
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get()
+            ->map(function($item) {
+                $item->month_name = Carbon::create()->month($item->month)->format('F');
+                $item->value = sprintf('%04d-%02d', $item->year, $item->month);
+                return $item;
+            });
+
+        return view('tasks.archive', compact('months'));
     }
 
     /**

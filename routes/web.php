@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/tasks/edit/{id}', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
 
+    Route::post('/tasks/archive', [TaskController::class, 'archiveTask'])->name('tasks.archive');
+    Route::get('/tasks/archive/list', [TaskController::class, 'archiveTable'])->name('tasks.archive.list');
 
     Route::get('/getTasks', [TaskController::class, 'dataTable'])->name('tasks.datatable');
 });

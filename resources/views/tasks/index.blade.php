@@ -9,20 +9,7 @@
                 <a href="{{ route('tasks.create') }}" class="primary-btn"><i class="fa-solid fa-plus"></i> New Task</a>
             </div>
     
-            <div class="bg-white rounded-2xl border border-stone-300">
-                <table id="tasks-table" class="table-auto border-y !border-stone-300">
-                    <thead>
-                        <tr>
-                            <th>Task</th>
-                            <th>Date</th>
-                            <th>ETC</th>
-                            <th>ATC</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
+            <x-datatable id="tasks-table" />
         </x-taskcontentwrapper>
     </x-wholepagewrapper>
 @endsection
@@ -30,6 +17,8 @@
 @push('scripts')
     <script>
         $(function() {
+            const tokenValue = $('meta[name="csrf-token"]').attr('content');
+
             $('#tasks-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -60,8 +49,30 @@
                     });
                 }
             });
+            
+            $(document).on('click', '.archive-btn', function() {
+                const taskId = $(this).data('id');
 
-            console.log('db version: ', $.fn.dataTable.version);
+                const form = document.createElement('form');
+                form.method = "POST";
+                form.action = @json(route('tasks.archive'));
+
+                const formData = new FormData();
+                formData.append('_token', tokenValue);
+                formData.append('id', taskId);
+
+                for (const [key, value] of formData.entries()) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = key;
+                    hiddenInput.value = value;
+                    form.appendChild(hiddenInput);
+                }
+
+                document.body.appendChild(form);
+
+                form.submit();
+            });
         });
     </script>
 @endpush

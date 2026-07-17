@@ -15,6 +15,46 @@
 }
 
 @layer components {
+    .status-count.pending,
+    .task-status.pending {
+        @apply text-[#b45309];
+    }
+
+    .status-color.pending,
+    .task-status.pending {
+        @apply bg-[#fef3c7];
+    }
+
+    .status-count.in_progress,
+    .task-status.in_progress {
+        @apply text-[#1d4ed8];
+    }
+
+    .status-color.in_progress,
+    .task-status.in_progress {
+        @apply bg-[#dbeafe];
+    }
+
+    .status-count.completed,
+    .task-status.completed {
+        @apply text-[#15803d];
+    }
+
+    .status-color.completed,
+    .task-status.completed {
+        @apply bg-[#dcfce7];
+    }
+
+    .status-count.missed,
+    .task-status.missed {
+        @apply text-[#b91c1c];
+    }
+
+    .status-color.missed,
+    .task-status.missed {
+        @apply bg-[#fee2e2];
+    }
+
     .sidebar .active {
         @apply !text-white bg-[#1e1e1e];
     }
@@ -56,12 +96,20 @@
         @apply text-xs !text-stone-800;
     }
 
-    .dt-paging button {
-        @apply !ms-1 font-medium !text-black !rounded-lg !border-stone-300;
+    .dt-paging-button {
+        @apply !ms-1 font-medium !text-black !rounded-lg !border-stone-300 !bg-none transition-all ease-in;
     }
 
-    .dt-paging button.current {
-        @apply !bg-none !bg-white;
+    .dt-paging-button.disabled {
+        @apply !text-black/50 !border-stone-200;
+    }
+
+    .dt-paging-button.current {
+        @apply !bg-stone-200;
+    }
+
+    .dt-paging-button:not(.disabled):hover {
+        @apply !bg-none !bg-stone-50;
     }
 
     #tasks-table th {

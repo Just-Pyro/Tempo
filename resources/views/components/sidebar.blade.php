@@ -27,9 +27,12 @@
                 <i class="fa-solid fa-clipboard-check"></i>
             </x-pagetab>
         </a>
-        <x-pagetab pageName="Archives">
-            <i class="fa-solid fa-box-archive"></i>
-        </x-pagetab>
+
+        <a href="{{ route('tasks.archive.list') }}">
+            <x-pagetab pageName="Archives">
+                <i class="fa-solid fa-box-archive"></i>
+            </x-pagetab>
+        </a>
 
         <x-pagetab pageName="Log out">
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
