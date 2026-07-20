@@ -30,4 +30,5 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/tasks/archive/list', [TaskController::class, 'archiveTable'])->name('tasks.archive.list');
 
     Route::get('/getTasks', [TaskController::class, 'dataTable'])->name('tasks.datatable');
+    Route::get('/getArchive', [TaskController::class, 'archiveDataTable'])->name('archive.datatable');
 });

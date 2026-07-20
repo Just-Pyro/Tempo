@@ -231,6 +231,42 @@ class TaskController extends Controller
         return view('tasks.archive', compact('months'));
     }
 
+    public function archiveDataTable(Request $request)
+    {
+        $user = Auth::user();
+
+        $tasks = Task::where('user_id', $user->id)->where('status', 'archived')->latest();
+        
+        if ($request->filled('yearmonth') && $request->yearmonth != "all") {
+            $tasks->whereLike('archived_date', '%' . $request->yearmonth . '%');
+        }
+        
+        return DataTables::of($tasks)
+            ->editColumn('date_schedule', function ($task) {
+                $date = Carbon::parse($task->date_schedule)
+                    ->format('F j, Y');
+                return $date;
+            })
+            ->editColumn('etc', function ($task) {
+                return $this->formatDurationFromTime($task->etc);
+            })
+            ->editColumn('atc', function($task) {
+                if (!$task->atc) return '—';
+
+                return $this->formatDurationFromTime($task->atc);
+            })
+            ->editColumn('archived_date', function ($task) {
+                if (!$task->archived_date) return "—";
+
+                $date = Carbon::parse($task->archived_date)
+                    ->format('F j, Y'); 
+
+                return '<span class="archive_date">' . $date . '</span>';
+            })
+            ->rawColumns(['archived_date'])
+            ->make(true);
+    }
+
     /**
      * Update the specified resource in storage.
      */

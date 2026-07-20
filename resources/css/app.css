@@ -171,4 +171,8 @@
     div:has(> a > .task-actions) {
         @apply flex gap-2;
     }
+
+    .archive_date {
+        @apply italic text-stone-500;
+    }
 }
