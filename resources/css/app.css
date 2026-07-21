@@ -175,4 +175,8 @@
     .archive_date {
         @apply italic text-stone-500;
     }
+
+    .archive-view-link {
+        @apply transition ease-in-out hover:text-blue-800;
+    }
 }

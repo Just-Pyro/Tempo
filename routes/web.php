@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function() {
 
     Route::post('/tasks/archive', [TaskController::class, 'archiveTask'])->name('tasks.archive');
     Route::get('/tasks/archive/list', [TaskController::class, 'archiveTable'])->name('tasks.archive.list');
+    Route::get('/view/archive/{id}', [TaskController::class, 'viewArchive'])->name('view.archive');
 
     Route::get('/getTasks', [TaskController::class, 'dataTable'])->name('tasks.datatable');
     Route::get('/getArchive', [TaskController::class, 'archiveDataTable'])->name('archive.datatable');

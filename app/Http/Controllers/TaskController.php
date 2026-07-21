@@ -184,6 +184,8 @@ class TaskController extends Controller
             $task->save();
         }
 
+        if ($task->status == 'archived') return redirect()->route('view.archive');
+
         return view('tasks.edit', compact('task'));
     }
 
@@ -228,7 +230,7 @@ class TaskController extends Controller
                 return $item;
             });
 
-        return view('tasks.archive', compact('months'));
+        return view('archive.index', compact('months'));
     }
 
     public function archiveDataTable(Request $request)
@@ -242,6 +244,9 @@ class TaskController extends Controller
         }
         
         return DataTables::of($tasks)
+            ->editColumn('name', function($task) {
+                return '<a class="archive-view-link" href="'. route("view.archive", $task->id) .'">' . $task->name . '</a>';
+            })
             ->editColumn('date_schedule', function ($task) {
                 $date = Carbon::parse($task->date_schedule)
                     ->format('F j, Y');
@@ -263,8 +268,17 @@ class TaskController extends Controller
 
                 return '<span class="archive_date">' . $date . '</span>';
             })
-            ->rawColumns(['archived_date'])
+            ->rawColumns(['name', 'archived_date'])
             ->make(true);
+    }
+
+    public function viewArchive(string $id)
+    {
+        $task = Task::find($id);
+
+        if ($task->status != 'archived') return redirect()->route('tasks');
+
+        return view('archive.view', compact('task'));
     }
 
     /**
